@@ -7,7 +7,7 @@ git remote add upstream git@github.com:seccomp/libseccomp.git
 
 git fetch upstream
 
-# 2022.11.01
+# 2023.04.24
 git merge upstream/main
 ```
 
@@ -23,7 +23,7 @@ bash -c '
 apt-get install autoconf libtool gperf -y && \
 ./autogen.sh && \
 ./configure \
-  --prefix="$PWD/.tmp/amd64" --libdir="$PWD/.tmp/amd64/lib" \
+  --prefix="$PWD/.tmp/loong64" --libdir="$PWD/.tmp/loong64/lib" \
   --enable-static --enable-shared
 make install
 make clean
@@ -47,11 +47,28 @@ make install && \
 make clean
 '
 
+# mips64le
+docker run -it --rm \
+-v $PWD/:/go/src/github.com/open-beagle/libseccomp \
+-w /go/src/github.com/open-beagle/libseccomp \
+registry-vpc.cn-qingdao.aliyuncs.com/wod/golang:1.19-loongnix \
+bash -c '
+apt-get install autoconf libtool gperf -y && \
+./autogen.sh && \
+export CC=mips64el-linux-gnuabi64-gcc && \
+export STRIP=mips64el-linux-gnuabi64-strip && \
+./configure --host "mips64el-linux-gnuabi64" \
+  --prefix="$PWD/.tmp/mips64le" --libdir="$PWD/.tmp/mips64le/lib" \
+  --enable-static --enable-shared  && \
+make install  && \
+make clean
+'
+
 # Loong64
 docker run -it --rm \
 -v $PWD/:/go/src/github.com/open-beagle/libseccomp \
 -w /go/src/github.com/open-beagle/libseccomp \
-registry-vpc.cn-qingdao.aliyuncs.com/wod/golang:1.19 \
+registry-vpc.cn-qingdao.aliyuncs.com/wod/golang:1.19-loongnix \
 bash -c '
 apt-get install autoconf libtool gperf -y && \
 ./autogen.sh && \
@@ -59,10 +76,16 @@ export CC=loongarch64-linux-gnu-gcc && \
 export STRIP=loongarch64-linux-gnu-strip && \
 ./configure --host "loongarch64-linux-gnu" \
   --prefix="$PWD/.tmp/loong64" --libdir="$PWD/.tmp/loong64/lib" \
-  --enable-static --enable-shared
-make install
+  --enable-static --enable-shared && \
+make install && \
 make clean
 '
+
+docker run -it --rm \
+-v $PWD/:/go/src/github.com/open-beagle/libseccomp \
+-w /go/src/github.com/open-beagle/libseccomp \
+registry.cn-qingdao.aliyuncs.com/wod/debian:bookworm \
+bash
 
 # x86_64
 # /go/src/gitlab.wodcloud.com/cloud/runc/Dockerfile
@@ -81,26 +104,19 @@ docker push registry-vpc.cn-qingdao.aliyuncs.com/wod/runc-build:1.1.5
 ## cache
 
 ```bash
-# 构建缓存-->推送缓存至服务器
-docker run --rm \
-  -e PLUGIN_REBUILD=true \
-  -e PLUGIN_ENDPOINT=$PLUGIN_ENDPOINT \
-  -e PLUGIN_ACCESS_KEY=$PLUGIN_ACCESS_KEY \
-  -e PLUGIN_SECRET_KEY=$PLUGIN_SECRET_KEY \
-  -e PLUGIN_PATH="/cache/open-beagle/runc" \
-  -e PLUGIN_MOUNT="./.git" \
-  -v $(pwd):$(pwd) \
-  -w $(pwd) \
-  registry.cn-qingdao.aliyuncs.com/wod/devops-s3-cache:1.0
+# tar.gz
+docker run -it --rm \
+-v $PWD/:/go/src/github.com/open-beagle/libseccomp \
+-w /go/src/github.com/open-beagle/libseccomp \
+registry-vpc.cn-qingdao.aliyuncs.com/wod/golang:1.19-loongnix \
+bash -c '
+apt-get install autoconf libtool gperf -y && \
+./autogen.sh && \
+cp -r ./ /tmp/libseccomp-2.5.5 && \
+tar -zcvf libseccomp-2.5.5.tar.gz -C /tmp libseccomp-2.5.5
+'
 
-# 读取缓存-->将缓存从服务器拉取到本地
-docker run --rm \
-  -e PLUGIN_RESTORE=true \
-  -e PLUGIN_ENDPOINT=$PLUGIN_ENDPOINT \
-  -e PLUGIN_ACCESS_KEY=$PLUGIN_ACCESS_KEY \
-  -e PLUGIN_SECRET_KEY=$PLUGIN_SECRET_KEY \
-  -e PLUGIN_PATH="/cache/open-beagle/runc" \
-  -v $(pwd):$(pwd) \
-  -w $(pwd) \
-  registry.cn-qingdao.aliyuncs.com/wod/devops-s3-cache:1.0
+# cache
+mc cp ./libseccomp-2.5.5.tar.gz cache/kubernetes/k8s/libseccomp/
+rm -rf libseccomp-2.5.5.tar.gz
 ```
