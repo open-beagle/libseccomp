@@ -112,6 +112,7 @@ registry-vpc.cn-qingdao.aliyuncs.com/wod/golang:1.19-loongnix \
 bash -c '
 apt-get install autoconf libtool gperf -y && \
 ./autogen.sh && \
+sed -i --expression "s?0\.0\.0?2\.5\.5?" ./configure
 cp -r ./ /tmp/libseccomp-2.5.5 && \
 tar -zcvf libseccomp-2.5.5.tar.gz -C /tmp libseccomp-2.5.5
 '
