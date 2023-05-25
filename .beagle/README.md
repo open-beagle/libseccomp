@@ -81,24 +81,24 @@ make install && \
 make clean
 '
 
-docker run -it --rm \
--v $PWD/:/go/src/github.com/open-beagle/libseccomp \
--w /go/src/github.com/open-beagle/libseccomp \
-registry.cn-qingdao.aliyuncs.com/wod/debian:bookworm \
-bash
+# docker run -it --rm \
+# -v $PWD/:/go/src/github.com/open-beagle/libseccomp \
+# -w /go/src/github.com/open-beagle/libseccomp \
+# registry.cn-qingdao.aliyuncs.com/wod/debian:bookworm \
+# bash
 
-# x86_64
-# /go/src/gitlab.wodcloud.com/cloud/runc/Dockerfile
+# # x86_64
+# # /go/src/gitlab.wodcloud.com/cloud/runc/Dockerfile
 
-## 首先打个补丁，再编译runc-build
-git apply .beagle/v1.1-add-mips64el-support.patch
+# ## 首先打个补丁，再编译runc-build
+# git apply .beagle/v1.1-add-mips64el-support.patch
 
-docker build \
-  --build-arg GO_VERSION=1.19 \
-  --tag registry-vpc.cn-qingdao.aliyuncs.com/wod/runc-build:1.1.5 \
-  --file ./.beagle/runc-build.dockerfile .
+# docker build \
+#   --build-arg GO_VERSION=1.19 \
+#   --tag registry-vpc.cn-qingdao.aliyuncs.com/wod/runc-build:1.1.5 \
+#   --file ./.beagle/runc-build.dockerfile .
 
-docker push registry-vpc.cn-qingdao.aliyuncs.com/wod/runc-build:1.1.5
+# docker push registry-vpc.cn-qingdao.aliyuncs.com/wod/runc-build:1.1.5
 ```
 
 ## cache
