@@ -68,10 +68,12 @@ make clean
 docker run -it --rm \
 -v $PWD/:/go/src/github.com/open-beagle/libseccomp \
 -w /go/src/github.com/open-beagle/libseccomp \
+-e LIBSECCOMP_VERSION=2.5.5 \
 registry-vpc.cn-qingdao.aliyuncs.com/wod/golang:1.19-loongnix \
 bash -c '
 apt-get install autoconf libtool gperf -y && \
 ./autogen.sh && \
+sed -i --expression "s?0\.0\.0?2\.5\.5?" ./configure && \
 export CC=loongarch64-linux-gnu-gcc && \
 export STRIP=loongarch64-linux-gnu-strip && \
 ./configure --host "loongarch64-linux-gnu" \
