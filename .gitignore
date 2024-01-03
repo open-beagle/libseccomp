@@ -30,3 +30,6 @@ tags
 /stamp-h1
 /cov-int
 /libseccomp-coverity_*.tar.gz
+
+/.tmp
+/core.*
