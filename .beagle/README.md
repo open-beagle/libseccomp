@@ -27,8 +27,19 @@ bash .beagle/build.sh
 docker run -it --rm \
 -v $PWD/:/go/src/github.com/open-beagle/libseccomp \
 -w /go/src/github.com/open-beagle/libseccomp \
-registry.cn-qingdao.aliyuncs.com/wod/debian:bookworm-loong64 \
+cr.loongnix.cn/library/debian:buster \
 bash .beagle/build-loong64.sh
+
+docker build \
+  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64 \
+  --build-arg AUTHOR=mengkzhaoyun@gmail.com \
+  --build-arg VERSION=v2.5.5 \
+  --build-arg TARGETOS=linux \
+  --build-arg TARGETARCH=loong64 \
+  --tag registry-vpc.cn-qingdao.aliyuncs.com/wod/libseccomp:v2.5.5-loong64 \
+  --file ./.beagle/dockerfile .
+
+docker push registry-vpc.cn-qingdao.aliyuncs.com/wod/libseccomp:v2.5.5-loong64
 ```
 
 ## cache

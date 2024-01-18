@@ -4,6 +4,8 @@ set -ex
 
 apt-get install pkg-config build-essential autoconf libtool gperf -y
 
+chmod +x autogen.sh src/arch-gperf-generate
+
 cp -r /usr/include/asm-generic/ /usr/include/asm
 
 export LIBSECCOMP_VERSION=2.5.5
