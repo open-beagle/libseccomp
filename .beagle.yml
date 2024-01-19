@@ -11,7 +11,7 @@ volumes:
       path: /var/run/docker.sock
 
 workspace:
-  path: /go/src/github.com/opencontainers/runc
+  path: /go/src/github.com/open-beagle/libseccomp
 
 clone:
   disable: true
