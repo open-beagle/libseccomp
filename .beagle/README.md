@@ -40,6 +40,18 @@ docker build \
   --file ./.beagle/dockerfile .
 
 docker push registry-vpc.cn-qingdao.aliyuncs.com/wod/libseccomp:v2.5.5-loong64
+
+# loong64 Copy From Loongarch64 4.19 Linux
+docker build \
+  --build-arg BASE=registry.cn-qingdao.aliyuncs.com/wod/alpine:3-amd64 \
+  --build-arg AUTHOR=mengkzhaoyun@gmail.com \
+  --build-arg VERSION=v2.3.3 \
+  --build-arg TARGETOS=linux \
+  --build-arg TARGETARCH=loong64 \
+  --tag registry-vpc.cn-qingdao.aliyuncs.com/wod/libseccomp:v2.3.3-loong64 \
+  --file ./.beagle/dockerfile .
+
+docker push registry-vpc.cn-qingdao.aliyuncs.com/wod/libseccomp:v2.3.3-loong64
 ```
 
 ## cache
